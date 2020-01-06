@@ -66,10 +66,10 @@ static void _accumulate(OpSort *op, Record r) {
 		// a heap stored record with the current record.
 		if(_heap_elem_compare(heap_peek(op->heap), r, op) > 0) {
 			Record replaced = heap_poll(op->heap);
-			Record_Free(replaced);
+			OpBase_DeleteRecord(replaced);
 			heap_offer(&op->heap, r);
 		} else {
-			Record_Free(r);
+			OpBase_DeleteRecord(r);
 		}
 	}
 }
@@ -152,7 +152,7 @@ static OpResult SortReset(OpBase *ctx) {
 		recordCount = heap_count(op->heap);
 		for(uint i = 0; i < recordCount; i++) {
 			Record r = (Record)heap_poll(op->heap);
-			Record_Free(r);
+			OpBase_DeleteRecord(r);
 		}
 	}
 
@@ -160,7 +160,7 @@ static OpResult SortReset(OpBase *ctx) {
 		recordCount = array_len(op->buffer);
 		for(uint i = 0; i < recordCount; i++) {
 			Record r = array_pop(op->buffer);
-			Record_Free(r);
+			OpBase_DeleteRecord(r);
 		}
 	}
 
@@ -175,7 +175,7 @@ static void SortFree(OpBase *ctx) {
 		uint recordCount = heap_count(op->heap);
 		for(uint i = 0; i < recordCount; i++) {
 			Record r = (Record)heap_poll(op->heap);
-			Record_Free(r);
+			OpBase_DeleteRecord(r);
 		}
 		heap_free(op->heap);
 		op->heap = NULL;
@@ -185,7 +185,7 @@ static void SortFree(OpBase *ctx) {
 		uint recordCount = array_len(op->buffer);
 		for(uint i = 0; i < recordCount; i++) {
 			Record r = array_pop(op->buffer);
-			Record_Free(r);
+			OpBase_DeleteRecord(r);
 		}
 		array_free(op->buffer);
 		op->buffer = NULL;
